@@ -215,11 +215,16 @@
 
         .hero-grid {
             display: grid;
-            grid-template-columns: 1fr 1.1fr;
-            gap: 60px;
+            grid-template-columns: 1fr;
+            gap: 40px;
             align-items: center;
             position: relative;
             z-index: 2;
+            text-align: center;
+        }
+
+        .hero-image-wrapper {
+            order: -1;
         }
 
         .hero-content h1 {
@@ -270,8 +275,11 @@
         }
 
         .hero-image-wrapper img {
-            max-width: 100%;
+            max-width: 480px;
+            width: 100%;
             height: auto;
+            display: block;
+            margin: 0 auto;
             border-radius: 24px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.4);
             border: 6px solid rgba(201, 168, 76, 0.3);
@@ -1190,22 +1198,12 @@
 
         /* ===== RESPONSIVO ===== */
         @media (max-width: 992px) {
-            .hero-grid {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 40px;
-            }
-
             .hero-content h1 {
                 font-size: 2.8rem;
             }
 
             .hero-highlight {
                 text-align: left;
-            }
-
-            .hero-image-wrapper {
-                order: -1;
             }
 
             .pricing-grid {
@@ -1354,7 +1352,7 @@
                         <p class="highlight-text">O problema não é você. É a retenção de líquidos.</p>
                     </div>
 
-                    <a href="#pricing" class="btn btn-gold">QUERO DESINCHAR AGORA</a>
+                    <a href="#pricing" class="btn btn-gold" onclick="openHeroOfferModal(); return false;">QUERO DESINCHAR AGORA</a>
                     <p class="small-note">Acesso imediato • Garantia de 7 dias • Risco zero</p>
                 </div>
                 <div class="hero-image-wrapper">
@@ -1656,6 +1654,33 @@
         </div>
     </section>
 
+    <!-- ===================== MODAL OFERTA HERO (R$27) ===================== -->
+    <div id="heroOfferModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Sua Versão Completa está pronta</h2>
+            </div>
+            <div class="modal-body">
+                <p style="text-align:center;">Tudo que você precisa para desinchar, em um só lugar:</p>
+                <div class="upgrade-comparison">
+                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Método</strong> passo a passo</span></div>
+                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Guia dos chás</strong> completo</span></div>
+                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Ritual de 21 dias</strong></span></div>
+                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Checklist diário</strong></span></div>
+                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Atualizações</strong> + suporte</span></div>
+                </div>
+                <div class="upgrade-value">
+                    R$27
+                    <small>De R$97 por tempo limitado</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="https://pay.hotmart.com/U104271681R?off=x1qv9cez&checkoutMode=10" class="btn btn-gold" onclick="trackCheckout('metodo_completo', 27)">QUERO A VERSÃO COMPLETA AGORA</a>
+                <a href="#pricing" class="btn btn-secondary" onclick="closeHeroOfferModal()">Ver todas as opções</a>
+            </div>
+        </div>
+    </div>
+
     <!-- ===================== MODAL ===================== -->
     <div id="upgradeModal" class="modal-overlay">
         <div class="modal-content">
@@ -1738,6 +1763,42 @@
             checkoutEvents[eventKey] = true;
         }
 
+        // ----- MODAL OFERTA HERO -----
+        function openHeroOfferModal() {
+            document.getElementById('heroOfferModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+            const popup = document.getElementById('notificationPopup');
+            popup.classList.add('hidden');
+            popup.classList.remove('show');
+            isVisible = false;
+            clearTimeout(notificationTimer);
+            modalIsOpen = true;
+
+            fbq('track', 'ViewContent', {
+                content_name: 'Oferta Versão Completa (Hero)',
+                value: 27,
+                currency: 'BRL'
+            });
+        }
+
+        function closeHeroOfferModal() {
+            document.getElementById('heroOfferModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+
+            const popup = document.getElementById('notificationPopup');
+            popup.classList.remove('hidden');
+            modalIsOpen = false;
+
+            setTimeout(() => {
+                if (!modalIsOpen) showNotification();
+            }, 3000);
+        }
+
+        document.getElementById('heroOfferModal').addEventListener('click', function(e) {
+            if (e.target === this) closeHeroOfferModal();
+        });
+
         // ----- MODAL -----
         function openUpgradeModal() {
             document.getElementById('upgradeModal').classList.add('active');
@@ -1777,7 +1838,10 @@
         });
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeUpgradeModal();
+            if (e.key === 'Escape') {
+                closeUpgradeModal();
+                closeHeroOfferModal();
+            }
         });
 
         window.addEventListener('load', trackViewContent);
