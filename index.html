@@ -1352,7 +1352,7 @@
                         <p class="highlight-text">O problema não é você. É a retenção de líquidos.</p>
                     </div>
 
-                    <a href="#pricing" class="btn btn-gold" onclick="openHeroOfferModal(); return false;">QUERO DESINCHAR AGORA</a>
+                    <a href="javascript:void(0)" class="btn btn-gold" onclick="openHeroOfferModal()">QUERO DESINCHAR AGORA</a>
                     <p class="small-note">Acesso imediato • Garantia de 7 dias • Risco zero</p>
                 </div>
                 <div class="hero-image-wrapper">
@@ -1765,21 +1765,27 @@
 
         // ----- MODAL OFERTA HERO -----
         function openHeroOfferModal() {
-            document.getElementById('heroOfferModal').classList.add('active');
+            const modal = document.getElementById('heroOfferModal');
+            if (!modal) return;
+            modal.classList.add('active');
             document.body.style.overflow = 'hidden';
 
             const popup = document.getElementById('notificationPopup');
-            popup.classList.add('hidden');
-            popup.classList.remove('show');
+            if (popup) {
+                popup.classList.add('hidden');
+                popup.classList.remove('show');
+            }
             isVisible = false;
             clearTimeout(notificationTimer);
             modalIsOpen = true;
 
-            fbq('track', 'ViewContent', {
-                content_name: 'Oferta Versão Completa (Hero)',
-                value: 27,
-                currency: 'BRL'
-            });
+            if (typeof fbq === 'function') {
+                fbq('track', 'ViewContent', {
+                    content_name: 'Oferta Versão Completa (Hero)',
+                    value: 27,
+                    currency: 'BRL'
+                });
+            }
         }
 
         function closeHeroOfferModal() {
