@@ -1352,7 +1352,7 @@
                         <p class="highlight-text">O problema não é você. É a retenção de líquidos.</p>
                     </div>
 
-                    <a href="javascript:void(0)" class="btn btn-gold" onclick="openHeroOfferModal()">QUERO DESINCHAR AGORA</a>
+                    <a href="#oferta-completa" class="btn btn-gold">QUERO DESINCHAR AGORA</a>
                     <p class="small-note">Acesso imediato • Garantia de 7 dias • Risco zero</p>
                 </div>
                 <div class="hero-image-wrapper">
@@ -1398,7 +1398,7 @@
                     <li>Dificuldade de perder medidas</li>
                 </ul>
                 <p style="font-size:1.2rem; font-weight:600; color:#1E3A2F;">Enquanto o corpo retém líquido, emagrecer vira uma luta.</p>
-                <a href="#pricing" class="btn btn-secondary">QUERO RESOLVER ISSO</a>
+                <a href="#oferta-completa" class="btn btn-secondary">QUERO RESOLVER ISSO</a>
             </div>
         </div>
     </section>
@@ -1437,7 +1437,7 @@
                     <li>Menos peso no fim da tarde</li>
                     <li>Rotina simples com o próprio chimarrão</li>
                 </ul>
-                <a href="#pricing" class="btn btn-primary">COMECE AGORA</a>
+                <a href="#oferta-completa" class="btn btn-primary">COMECE AGORA</a>
             </div>
         </div>
     </section>
@@ -1504,7 +1504,7 @@
             </div>
             <div class="cta-wrapper">
                 <p>Mais de 1.300 pessoas já aplicaram e comprovaram</p>
-                <a href="#pricing" class="btn btn-primary mt-16">QUERO OS MESMOS RESULTADOS</a>
+                <a href="#oferta-completa" class="btn btn-primary mt-16">QUERO OS MESMOS RESULTADOS</a>
             </div>
         </div>
     </section>
@@ -1545,7 +1545,7 @@
 
             <div class="pricing-grid">
                 <!-- Versão Completa -->
-                <div class="pricing-card featured">
+                <div class="pricing-card featured" id="oferta-completa">
                     <h3>Versão Completa</h3>
                     <p class="sub">Reúne todo o passo a passo em um só lugar, do início ao fim</p>
                     <div class="price-old">De R$97</div>
@@ -1654,33 +1654,6 @@
         </div>
     </section>
 
-    <!-- ===================== MODAL OFERTA HERO (R$27) ===================== -->
-    <div id="heroOfferModal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Sua Versão Completa está pronta</h2>
-            </div>
-            <div class="modal-body">
-                <p style="text-align:center;">Tudo que você precisa para desinchar, em um só lugar:</p>
-                <div class="upgrade-comparison">
-                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Método</strong> passo a passo</span></div>
-                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Guia dos chás</strong> completo</span></div>
-                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Ritual de 21 dias</strong></span></div>
-                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Checklist diário</strong></span></div>
-                    <div class="upgrade-item"><i class="fas fa-check-circle"></i> <span><strong>Atualizações</strong> + suporte</span></div>
-                </div>
-                <div class="upgrade-value">
-                    R$27
-                    <small>De R$97 por tempo limitado</small>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="https://pay.hotmart.com/U104271681R?off=x1qv9cez&checkoutMode=10" class="btn btn-gold" onclick="trackCheckout('metodo_completo', 27)">QUERO A VERSÃO COMPLETA AGORA</a>
-                <a href="#pricing" class="btn btn-secondary" onclick="closeHeroOfferModal()">Ver todas as opções</a>
-            </div>
-        </div>
-    </div>
-
     <!-- ===================== MODAL ===================== -->
     <div id="upgradeModal" class="modal-overlay">
         <div class="modal-content">
@@ -1763,48 +1736,6 @@
             checkoutEvents[eventKey] = true;
         }
 
-        // ----- MODAL OFERTA HERO -----
-        function openHeroOfferModal() {
-            const modal = document.getElementById('heroOfferModal');
-            if (!modal) return;
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-
-            const popup = document.getElementById('notificationPopup');
-            if (popup) {
-                popup.classList.add('hidden');
-                popup.classList.remove('show');
-            }
-            isVisible = false;
-            clearTimeout(notificationTimer);
-            modalIsOpen = true;
-
-            if (typeof fbq === 'function') {
-                fbq('track', 'ViewContent', {
-                    content_name: 'Oferta Versão Completa (Hero)',
-                    value: 27,
-                    currency: 'BRL'
-                });
-            }
-        }
-
-        function closeHeroOfferModal() {
-            document.getElementById('heroOfferModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-
-            const popup = document.getElementById('notificationPopup');
-            popup.classList.remove('hidden');
-            modalIsOpen = false;
-
-            setTimeout(() => {
-                if (!modalIsOpen) showNotification();
-            }, 3000);
-        }
-
-        document.getElementById('heroOfferModal').addEventListener('click', function(e) {
-            if (e.target === this) closeHeroOfferModal();
-        });
-
         // ----- MODAL -----
         function openUpgradeModal() {
             document.getElementById('upgradeModal').classList.add('active');
@@ -1844,10 +1775,7 @@
         });
 
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeUpgradeModal();
-                closeHeroOfferModal();
-            }
+            if (e.key === 'Escape') closeUpgradeModal();
         });
 
         window.addEventListener('load', trackViewContent);
